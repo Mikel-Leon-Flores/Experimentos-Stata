@@ -1,0 +1,31 @@
+use "C:\Users\mikel\Downloads\enaho01-2024-200.dta"
+
+gen espobre = 1 if pobreza <= 2
+replace espobre = 0 if pobreza == 3
+drop if pobreza == .
+
+gen edad = p208a
+drop if p208a == .
+
+replace departamento =  substr(ubigeo, 1, 2)
+destring departament, replace
+/*
+forvalues i = 01(1)26 {
+	gen dept`i' = 1 if departamento == `i'
+	replace dept`i' = 0 if departamento != `i'
+}
+
+forvalues i = 1(1)9 {
+	rename dept`i' dept0`i'
+}*/
+
+forvalues i = 2(1)12 {
+	gen educ_`i' = 1 if p301a == `i'
+	replace educ_`i' = 0 if p301a != `i'
+}
+
+local educa_niv educ_2 educ_3 educ_4 educ_5 educ_6 educ_7 educ_8 educ_9 educ_10 educ_11 educ_12
+
+logit espobre educ_2 educ_3 educ_4 educ_5 educ_6 educ_7 educ_8 educ_9 educ_10 educ_11 educ_12
+
+logit espobre p208a p207 p1144 educ_2 educ_3 educ_4 educ_5 educ_6 educ_7 educ_8 educ_9 educ_10 educ_11 educ_12
